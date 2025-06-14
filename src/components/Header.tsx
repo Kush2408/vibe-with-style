@@ -1,10 +1,22 @@
+
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Search, ShoppingBag, User, Menu } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+
+const navLinks = [
+  { to: '/', label: 'Home' },
+  { to: '/products', label: 'Shop' },
+  { to: '/products/new', label: 'New In' },
+  { to: '/products/sale', label: 'Sale' },
+  { to: '/products/tops', label: 'Tops' },
+  { to: '/products/bottoms', label: 'Bottoms' },
+  { to: '/products/accessories', label: 'Accessories' },
+];
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount] = useState(3);
+  const location = useLocation();
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
@@ -16,34 +28,27 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
-              Home
-            </Link>
-            <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
-              Shop
-            </Link>
-            <Link to="/products/new" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
-              New In
-            </Link>
-            <Link to="/products/sale" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
-              Sale
-            </Link>
-            <Link to="/products/tops" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
-              Tops
-            </Link>
-            <Link to="/products/bottoms" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
-              Bottoms
-            </Link>
-            <Link to="/products/accessories" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
-              Accessories
-            </Link>
+          <nav className="hidden md:flex items-center space-x-6">
+            {navLinks.map(link => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={
+                  "text-gray-700 hover:text-purple-600 transition-colors font-medium" +
+                  (location.pathname === link.to
+                    ? " underline underline-offset-8 decoration-2 decoration-pink-500"
+                    : "")
+                }
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
-          {/* Search Bar */}
+          {/* Desktop Search */}
           <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search for trendy fits..."
@@ -53,7 +58,7 @@ const Header = () => {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             <button className="p-2 text-gray-700 hover:text-purple-600 transition-colors">
               <User className="w-5 h-5" />
             </button>
@@ -65,53 +70,52 @@ const Header = () => {
                 </span>
               )}
             </Link>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-purple-600 transition-colors"
-            >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-100 py-4 animate-fade-in">
-            <div className="flex flex-col space-y-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-50"
-                />
-              </div>
-              <Link to="/" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
-                Home
-              </Link>
-              <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
-                Shop
-              </Link>
-              <Link to="/products/new" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
-                New In
-              </Link>
-              <Link to="/products/sale" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
-                Sale
-              </Link>
-              <Link to="/products/tops" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
-                Tops
-              </Link>
-              <Link to="/products/bottoms" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
-                Bottoms
-              </Link>
-              <Link to="/products/accessories" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
-                Accessories
-              </Link>
+            {/* Mobile menu button with Sheet */}
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <button className="p-2 text-gray-700 hover:text-purple-600 transition-colors" aria-label="Open navigation menu">
+                    <Menu className="w-5 h-5" />
+                  </button>
+                </SheetTrigger>
+                <SheetContent side="left" className="pr-0 pl-0 w-72 flex flex-col gap-0">
+                  <div className="pt-7 px-6 pb-2 flex items-center justify-between border-b border-gray-200">
+                    <Link
+                      to="/"
+                      className="text-xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
+                    >
+                      VIBE
+                    </Link>
+                  </div>
+                  <nav className="flex flex-col gap-1 px-6 mt-4 w-full">
+                    {navLinks.map(link => (
+                      <Link
+                        to={link.to}
+                        key={link.to}
+                        className={
+                          "w-full py-3 text-lg text-gray-700 font-medium hover:bg-gradient-to-r hover:from-purple-100 hover:to-pink-100 rounded transition-colors" +
+                          (location.pathname === link.to ? " bg-gradient-to-r from-purple-50 to-pink-50 font-bold" : "")
+                        }
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </nav>
+                  <div className="flex items-center gap-3 px-6 mt-6 mb-2">
+                    <div className="relative w-full">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <input
+                        type="text"
+                        placeholder="Search..."
+                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-50"
+                      />
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );
