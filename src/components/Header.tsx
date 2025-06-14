@@ -24,7 +24,7 @@ const Header = () => {
             <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
               Shop
             </Link>
-            <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
+            <Link to="/products/new" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
               New In
             </Link>
             <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
@@ -49,7 +49,6 @@ const Header = () => {
             <button className="p-2 text-gray-700 hover:text-purple-600 transition-colors">
               <User className="w-5 h-5" />
             </button>
-            
             <Link to="/cart" className="relative p-2 text-gray-700 hover:text-purple-600 transition-colors">
               <ShoppingBag className="w-5 h-5" />
               {cartCount > 0 && (
@@ -87,7 +86,7 @@ const Header = () => {
               <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
                 Shop
               </Link>
-              <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
+              <Link to="/products/new" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
                 New In
               </Link>
               <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">

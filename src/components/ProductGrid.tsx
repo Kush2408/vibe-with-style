@@ -1,7 +1,25 @@
-
 import ProductCard from './ProductCard';
+import { Link, useLocation } from 'react-router-dom';
 
-const products = [
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  image: string;
+  category: string;
+  isNew?: boolean;
+  isSale?: boolean;
+}
+
+interface ProductGridProps {
+  products?: Product[];
+  activeFilter?: string;
+  showFilters?: boolean;
+}
+
+// Default main site products (for /products route)
+const defaultProducts: Product[] = [
   {
     id: 1,
     name: "Oversized Vintage Tee",
@@ -79,7 +97,37 @@ const products = [
   },
 ];
 
-const ProductGrid = () => {
+const FILTERS = ['All', 'New In', 'Sale', 'Tops', 'Bottoms', 'Accessories'];
+
+const ProductGrid = ({
+  products,
+  activeFilter,
+  showFilters = true,
+}: ProductGridProps) => {
+  const location = useLocation();
+  // Use provided products array, or default export
+  const productList = products || defaultProducts;
+
+  // Determine active filter based on prop or route
+  let currentActiveFilter: string = activeFilter || "All";
+  if (!activeFilter && location.pathname === "/products/new") {
+    currentActiveFilter = "New In";
+  } else if (!activeFilter && location.pathname === "/products") {
+    currentActiveFilter = "All";
+  }
+
+  // Filtering logic (only for demo, not for dedicated /products/new route)
+  const getFilteredProducts = () => {
+    if (currentActiveFilter === 'All') return productList;
+    if (currentActiveFilter === 'New In') return productList.filter(p => p.isNew);
+    if (currentActiveFilter === 'Sale') return productList.filter(p => p.isSale);
+    return productList.filter((p) => p.category === currentActiveFilter);
+  };
+  const filteredProducts = getFilteredProducts();
+
+  // When on /products/new and products are explicitly passed, skip pills' filtering (just render all)
+  const isDedicatedNewIn = location.pathname === "/products/new" && !!products;
+
   return (
     <section className="py-16 px-4 max-w-7xl mx-auto">
       {/* Section Header */}
@@ -93,24 +141,47 @@ const ProductGrid = () => {
       </div>
 
       {/* Filter Pills */}
-      <div className="flex flex-wrap justify-center gap-3 mb-12">
-        {['All', 'New In', 'Sale', 'Tops', 'Bottoms', 'Accessories'].map((filter) => (
-          <button
-            key={filter}
-            className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
-              filter === 'All'
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {filter}
-          </button>
-        ))}
-      </div>
+      {showFilters && (
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {FILTERS.map((filter) => {
+            const isActive = currentActiveFilter === filter;
+            // Route for filter
+            let filterRoute = '/products';
+            if (filter === 'New In') filterRoute = '/products/new';
+            else if (filter !== 'All') filterRoute = `/products?filter=${encodeURIComponent(filter)}`;
+            // Only New In and All get routes, others keep anchor for demo
+            return filter === 'New In' || filter === 'All' ? (
+              <Link
+                to={filterRoute}
+                key={filter}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {filter}
+              </Link>
+            ) : (
+              <button
+                key={filter}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+                // For demo, other filters just set location/href or trigger more complex logic if needed
+              >
+                {filter}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products.map((product) => (
+        {(isDedicatedNewIn ? productList : filteredProducts).map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
