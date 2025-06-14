@@ -4,13 +4,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
+// Removed "Tops" and "Bottoms" from navLinks array
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/products', label: 'Shop' },
   { to: '/products/new', label: 'New In' },
   { to: '/products/sale', label: 'Sale' },
-  { to: '/products/tops', label: 'Tops' },
-  { to: '/products/bottoms', label: 'Bottoms' },
   { to: '/products/accessories', label: 'Accessories' },
 ];
 
