@@ -110,13 +110,16 @@ const ProductGrid = ({
 
   // Determine active filter based on prop or route
   let currentActiveFilter: string = activeFilter || "All";
-  if (!activeFilter && location.pathname === "/products/new") {
-    currentActiveFilter = "New In";
-  } else if (!activeFilter && location.pathname === "/products") {
-    currentActiveFilter = "All";
+  if (!activeFilter) {
+    if (location.pathname === "/products/new") currentActiveFilter = "New In";
+    else if (location.pathname === "/products/sale") currentActiveFilter = "Sale";
+    else if (location.pathname === "/products/tops") currentActiveFilter = "Tops";
+    else if (location.pathname === "/products/bottoms") currentActiveFilter = "Bottoms";
+    else if (location.pathname === "/products/accessories") currentActiveFilter = "Accessories";
+    else if (location.pathname === "/products") currentActiveFilter = "All";
   }
 
-  // Filtering logic (only for demo, not for dedicated /products/new route)
+  // Filtering logic
   const getFilteredProducts = () => {
     if (currentActiveFilter === 'All') return productList;
     if (currentActiveFilter === 'New In') return productList.filter(p => p.isNew);
@@ -125,8 +128,15 @@ const ProductGrid = ({
   };
   const filteredProducts = getFilteredProducts();
 
-  // When on /products/new and products are explicitly passed, skip pills' filtering (just render all)
-  const isDedicatedNewIn = location.pathname === "/products/new" && !!products;
+  // When on dedicated category page and products are explicitly passed, skip filtering
+  const isDedicatedRoute = (
+    (location.pathname === "/products/new" ||
+     location.pathname === "/products/sale" ||
+     location.pathname === "/products/tops" ||
+     location.pathname === "/products/bottoms" ||
+     location.pathname === "/products/accessories")
+    && !!products
+  );
 
   return (
     <section className="py-16 px-4 max-w-7xl mx-auto">
@@ -145,12 +155,15 @@ const ProductGrid = ({
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           {FILTERS.map((filter) => {
             const isActive = currentActiveFilter === filter;
-            // Route for filter
+            // Dedicated route for each filter:
             let filterRoute = '/products';
             if (filter === 'New In') filterRoute = '/products/new';
-            else if (filter !== 'All') filterRoute = `/products?filter=${encodeURIComponent(filter)}`;
-            // Only New In and All get routes, others keep anchor for demo
-            return filter === 'New In' || filter === 'All' ? (
+            else if (filter === 'Sale') filterRoute = '/products/sale';
+            else if (filter === 'Tops') filterRoute = '/products/tops';
+            else if (filter === 'Bottoms') filterRoute = '/products/bottoms';
+            else if (filter === 'Accessories') filterRoute = '/products/accessories';
+            // All pills are <Link> now for full category navigation
+            return (
               <Link
                 to={filterRoute}
                 key={filter}
@@ -162,18 +175,6 @@ const ProductGrid = ({
               >
                 {filter}
               </Link>
-            ) : (
-              <button
-                key={filter}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
-                  isActive
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-                // For demo, other filters just set location/href or trigger more complex logic if needed
-              >
-                {filter}
-              </button>
             );
           })}
         </div>
@@ -181,7 +182,7 @@ const ProductGrid = ({
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {(isDedicatedNewIn ? productList : filteredProducts).map((product) => (
+        {(isDedicatedRoute ? productList : filteredProducts).map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

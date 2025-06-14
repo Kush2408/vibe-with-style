@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
@@ -27,8 +26,17 @@ const Header = () => {
             <Link to="/products/new" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
               New In
             </Link>
-            <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
+            <Link to="/products/sale" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
               Sale
+            </Link>
+            <Link to="/products/tops" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
+              Tops
+            </Link>
+            <Link to="/products/bottoms" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
+              Bottoms
+            </Link>
+            <Link to="/products/accessories" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">
+              Accessories
             </Link>
           </nav>
 
@@ -89,8 +97,17 @@ const Header = () => {
               <Link to="/products/new" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
                 New In
               </Link>
-              <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
+              <Link to="/products/sale" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
                 Sale
+              </Link>
+              <Link to="/products/tops" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
+                Tops
+              </Link>
+              <Link to="/products/bottoms" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
+                Bottoms
+              </Link>
+              <Link to="/products/accessories" className="text-gray-700 hover:text-purple-600 transition-colors font-medium py-2">
+                Accessories
               </Link>
             </div>
           </div>
